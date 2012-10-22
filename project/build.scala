@@ -24,6 +24,9 @@ object build extends Build {
         "-deprecation"
       , "-unchecked"
       )
+    , libraryDependencies ++= Seq(
+        "org.scalacheck" %% "scalacheck" % "1.9" % "test" withSources
+      )
     )
   )
 

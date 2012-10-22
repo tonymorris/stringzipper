@@ -425,7 +425,28 @@ sealed trait StringZipper {
           case Nil => if(r.isEmpty) EmptyZ else OffBoundsZ
           case h::t => ListZ(l, h, x::t, n)
         }
-    } 
+    }
+
+  // Compare two zippers for equality.
+  def ===(z: StringZipper): Boolean =
+    this match {
+      case EmptyZ => z.isEmpty
+      case OffBoundsZ => !z.isInBounds
+      case StringZ(s, x, i, y) =>
+        z match {
+          case EmptyZ => false
+          case OffBoundsZ => false
+          case StringZ(ss, xx, ii, yy) => StringZListZ(s, x, i, y) == StringZListZ(ss, xx, ii, yy)
+          case ListZ(ll, xx, rr, _) => StringZListZ(s, x, i, y) == (ll, xx, rr)
+        }
+      case ListZ(l, x, r, _) =>
+        z match {
+          case EmptyZ => false
+          case OffBoundsZ => false
+          case StringZ(ss, xx, ii, yy) => (l, x, r) == StringZListZ(ss, xx, ii, yy)
+          case ListZ(ll, xx, rr, _) => (l, x, r) == (ll, xx, rr)
+        }
+    }
 
   // Returns a possible string representation of this zipper (no value if the zipper is out of bounds).
   def unary_- : Option[String] =
