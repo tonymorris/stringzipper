@@ -448,6 +448,10 @@ sealed trait StringZipper {
         }
     }
 
+  // Compare two zippers for inequality.
+  def !==(z: StringZipper): Boolean =
+    !(===(z))
+
   // Returns a possible string representation of this zipper (no value if the zipper is out of bounds).
   def unary_- : Option[String] =
     this match {
@@ -468,7 +472,7 @@ sealed trait StringZipper {
 
   // A string representation of this zipper. Empty string if the zipper is out of bounds.
   override def toString: String =
-    -this getOrElse ""  
+    -this getOrElse ""
 
   // BEGIN unsafe, unexported
   private def StringZListZLefts(s: String, x: Int, i: Int): List[Char] = {
