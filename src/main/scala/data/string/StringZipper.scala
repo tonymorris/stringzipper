@@ -1,3 +1,5 @@
+package data.string
+
 sealed trait StringZipper {
   // The length of the zipper.
   // O(1) if there have not been any length-altering updates, O(n) otherwise.
