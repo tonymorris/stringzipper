@@ -472,7 +472,31 @@ sealed trait StringZipper {
 
   // A string representation of this zipper. Empty string if the zipper is out of bounds.
   override def toString: String =
-    -this getOrElse ""
+    this match {
+      case EmptyZ => "∅"
+      case OffBoundsZ => "∞"
+      case StringZ(s, x, i, y) => {
+        val b = new StringBuilder(s.length)
+        b.append(s.substring(x, i))
+        b += '⋙'
+        b += s(i)
+        b += '⋘'
+        b.append(s.substring(i, y))
+        b.toString
+      }
+      case ListZ(l, x, r, n) => {
+        val b = n match {
+          case Some(o) => new StringBuilder(o)
+          case None => new StringBuilder
+        }
+        l foreach (b insert (0, _))
+        b += '⋙'
+        b += x
+        b += '⋘'
+        r foreach (b += _)
+        b.toString
+      }
+    }
 
   // BEGIN unsafe, unexported
   private def StringZListZLefts(s: String, x: Int, i: Int): List[Char] = {
