@@ -84,17 +84,31 @@ object TestStringZipper extends Properties("StringZipper") {
       !z.isEmpty || z.isInBounds
   )
 
-  property("right then left is back again") = forAll(
+  property("right n then left is back again") = forAll(
     (z: StringZipper, n : Int) => {
       val r = z + n
       !r.hasFocus || (r - n === z)
     }
   )
 
-  property("left then right is back again") = forAll(
+  property("left n then right is back again") = forAll(
     (z: StringZipper, n : Int) => {
       val r = z - n
       !r.hasFocus || (r + n === z)
+    }
+  )
+
+  property("right then left is back again") = forAll(
+    (z: StringZipper) => {
+      val r = z.right
+      !r.hasFocus || (r.left === z)
+    }
+  )
+
+  property("left then right is back again") = forAll(
+    (z: StringZipper) => {
+      val r = z.left
+      !r.hasFocus || (r.right === z)
     }
   )
 
