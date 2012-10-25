@@ -469,7 +469,7 @@ sealed trait StringZipper {
           b.toString
         })
     }    
-
+          /*
   // A string representation of this zipper. Empty string if the zipper is out of bounds.
   override def toString: String =
     this match {
@@ -497,7 +497,7 @@ sealed trait StringZipper {
         b.toString
       }
     }
-
+        */
   // BEGIN unsafe, unexported
   private def StringZListZLefts(s: String, x: Int, i: Int): List[Char] = {
     var lefts: List[Char] = Nil
