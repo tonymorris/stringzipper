@@ -182,4 +182,78 @@ object TestStringZipper extends Properties("StringZipper") {
       z.dropRights.nLeft == z.nLeft
   )
 
+  property("search left has at least as many rights") = forAll(
+    (z: StringZipper, p: Char => Boolean) =>
+      (p <<: z).nRight >= z.nRight
+  )
+
+  property("search right has at least as many lefts") = forAll(
+    (z: StringZipper, p: Char => Boolean) =>
+      (z :>> p).nLeft >= z.nLeft
+  )
+
+  property("search left has at least as few lefts") = forAll(
+    (z: StringZipper, p: Char => Boolean) =>
+      (p <<: z).nLeft <= z.nLeft
+  )
+
+  property("search right has at least as few rights") = forAll(
+    (z: StringZipper, p: Char => Boolean) =>
+      (z :>> p).nRight <= z.nRight
+  )
+
+  property("length of lefts is number of lefts") = forAll(
+    (z: StringZipper) =>
+      z.nLeft == z.lefts.length
+  )
+
+  property("length of rights is number of rights") = forAll(
+    (z: StringZipper) =>
+      z.nLeft == z.lefts.length
+  )
+
+  property("left tails lefts") = forAll(
+    (z: StringZipper) => {
+      val r = z.left
+      !(List(z, r) forall (_.hasFocus)) ||
+        r.lefts == z.lefts.tail
+    }
+  )
+
+  property("right tails rights") = forAll(
+    (z: StringZipper) => {
+      val r = z.right
+      !(List(z, r) forall (_.hasFocus)) ||
+        r.rights == z.rights.tail
+    }
+  )
+
+  property("left cons focii of rights") = forAll(
+    (z: StringZipper) => {
+      val r = z.left
+      z.focus forall (f =>
+        !r.hasFocus || (r.rightsF == (f :: z.rightsF))
+      )
+    }
+  )
+
+  property("right cons focii of lefts") = forAll(
+    (z: StringZipper) => {
+      val r = z.right
+      z.focus forall (f =>
+        !r.hasFocus || (r.leftsF == (f :: z.leftsF))
+      )
+    }
+  )
+
+  property("left focii is focii of left zippers") = forAll(
+    (z: StringZipper) =>
+      z.lefts.map(_.focus.get) == z.leftsF
+  )
+
+  property("right focii is focii of right zippers") = forAll(
+    (z: StringZipper) =>
+      z.rights.map(_.focus.get) == z.rightsF
+  )
+
 }

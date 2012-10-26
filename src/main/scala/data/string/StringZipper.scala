@@ -359,6 +359,42 @@ sealed trait StringZipper {
     b.toList
   }
 
+  // All focii to the left of focus.
+  def leftsF: List[Char] = {
+    var b = new collection.mutable.ListBuffer[Char]
+
+    @annotation.tailrec
+    def spin(z: StringZipper): Unit =
+      z.focus match {
+        case Some(f) => {
+          b += f
+          spin(z.left)
+        }
+        case None => ()
+      }
+
+    spin(left)
+    b.toList
+  }
+
+  // All focii to the right of focus.
+  def rightsF: List[Char] = {
+    var b = new collection.mutable.ListBuffer[Char]
+
+    @annotation.tailrec
+    def spin(z: StringZipper): Unit =
+      z.focus match {
+        case Some(f) => {
+          b += f
+          spin(z.right)
+        }
+        case None => ()
+      }
+
+    spin(right)
+    b.toList
+  }
+
   // Run the given function on the entire zipper (or no-op if there is no focus).
   def ~~(k: Char => Char): StringZipper =
     this match {
