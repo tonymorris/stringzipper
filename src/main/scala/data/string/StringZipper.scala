@@ -42,7 +42,7 @@ sealed trait StringZipper {
         }
     }
 
-  // Move the end to the start of the zipper (or no-op if there is no focus).
+  // Move the focus to the end of the zipper (or no-op if there is no focus).
   def end: StringZipper =
     this match {
       case EmptyZ => EmptyZ
