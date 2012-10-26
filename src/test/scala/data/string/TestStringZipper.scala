@@ -20,6 +20,26 @@ object TestStringZipper extends Properties("StringZipper") {
       z ~ identity === z
   )
 
+  property("start has no left") = forAll(
+    (z: StringZipper) =>
+      !z.start.hasLeft
+  )
+
+  property("end has no right") = forAll(
+    (z: StringZipper) =>
+      !z.end.hasRight
+  )
+
+  property("start does not update") = forAll(
+    (z: StringZipper) =>
+      -z.start == -z
+  )
+
+  property("end does not update") = forAll(
+    (z: StringZipper) =>
+      -z.end == -z
+  )
+
   property("apply to focus leaves length") = forAll(
     (z: StringZipper, f: Char => Char) =>
       (z ~ f).length == z.length

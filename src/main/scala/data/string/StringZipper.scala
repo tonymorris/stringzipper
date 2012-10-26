@@ -20,6 +20,46 @@ sealed trait StringZipper {
       case ListZ(_, x, _, _) => Some(x)
     }
 
+  // The index of the current focus of the zipper, if there is one.
+  def index: Option[Int] =
+    this match {
+      case EmptyZ => None
+      case OffBoundsZ => None
+      case StringZ(_, x, i, _) => Some(i - x)
+      case ListZ(l, _, _, n) => n orElse Some(l.length)
+    }
+
+  // Move the focus to the start of the zipper (or no-op if there is no focus).
+  def start: StringZipper =
+    this match {
+      case EmptyZ => EmptyZ
+      case OffBoundsZ => OffBoundsZ
+      case StringZ(s, x, i, y) => StringZ(s, x, x, y)
+      case ListZ(l, x, r, n) =>
+        l.reverse match {
+          case Nil => this
+          case h::t => ListZ(Nil, h, t ::: x :: r, n)
+        }
+    }
+
+  // Move the end to the start of the zipper (or no-op if there is no focus).
+  def end: StringZipper =
+    this match {
+      case EmptyZ => EmptyZ
+      case OffBoundsZ => OffBoundsZ
+      case StringZ(s, x, i, y) => StringZ(s, x, y-1, y)
+      case ListZ(l, x, r, n) => {
+        @annotation.tailrec
+        def gor(q: (List[Char], Char, List[Char])): (List[Char], Char, List[Char]) =
+          q._3 match {
+            case Nil => q
+            case h::t => gor(q._2 :: q._1, h, t)
+          }
+        val (ll, xx, rr) = gor(l, x, r)
+        ListZ(ll, xx, rr, n)
+      }
+    }
+
   // Return whether or not this zipper has focus.
   def hasFocus: Boolean =
     this match {
@@ -505,7 +545,7 @@ sealed trait StringZipper {
           b.toString
         })
     }    
-
+       /*
   // A string representation of this zipper. Empty string if the zipper is out of bounds.
   override def toString: String =
     this match {
@@ -533,6 +573,7 @@ sealed trait StringZipper {
         b.toString
       }
     }
+    */
 
   // BEGIN unsafe, unexported
   private def StringZListZLefts(s: String, x: Int, i: Int): List[Char] = {
@@ -554,7 +595,7 @@ sealed trait StringZipper {
 }
 private case object EmptyZ extends StringZipper
 private case object OffBoundsZ extends StringZipper
-private case class StringZ(s: String, start: Int, index: Int, end: Int) extends StringZipper
+private case class StringZ(s: String, t: Int, i: Int, e: Int) extends StringZipper
 private case class ListZ(ls: List[Char], x: Char, rs: List[Char], l: Option[Int]) extends StringZipper
 
 object StringZipper {
