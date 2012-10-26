@@ -172,7 +172,7 @@ sealed trait StringZipper {
     this match {
       case EmptyZ => false
       case OffBoundsZ => false
-      case StringZ(_, x, i, _) => i >= x
+      case StringZ(_, x, i, _) => i > x
       case ListZ(q, _, _, _) => !q.isEmpty
     }
 
@@ -181,7 +181,7 @@ sealed trait StringZipper {
     this match {
       case EmptyZ => false
       case OffBoundsZ => false
-      case StringZ(_, _, i, y) => i < y
+      case StringZ(_, _, i, y) => i < y - 1
       case ListZ(_, _, q, _) => !q.isEmpty
     }
 
@@ -481,7 +481,7 @@ sealed trait StringZipper {
         b += '⋙'
         b += s(i)
         b += '⋘'
-        b.append(s.substring(i, y))
+        b.append(s.substring(i + 1, y))
         b.toString
       }
       case ListZ(l, x, r, n) => {

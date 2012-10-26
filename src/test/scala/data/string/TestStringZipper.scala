@@ -98,6 +98,16 @@ object TestStringZipper extends Properties("StringZipper") {
     }
   )
 
+  property("left negates right") = forAll(
+    (z: StringZipper, n: Int) =>
+      (z - n) == (z + (-n))
+  )
+
+  property("right negates left") = forAll(
+    (z: StringZipper, n: Int) =>
+      (z + n) == (z - (-n))
+  )
+
   property("right then left is back again") = forAll(
     (z: StringZipper) => {
       val r = z.right
@@ -110,6 +120,66 @@ object TestStringZipper extends Properties("StringZipper") {
       val r = z.left
       !r.hasFocus || (r.right === z)
     }
+  )
+
+  property("left focus == hasLeft") = forAll(
+    (z: StringZipper) =>
+      z.hasLeft == z.left.hasFocus
+  )
+
+  property("right focus == hasRight") = forAll(
+    (z: StringZipper) =>
+      z.hasLeft == z.left.hasFocus
+  )
+
+  property("nLeft >= 0") = forAll(
+    (z: StringZipper) =>
+      z.nLeft >= 0
+  )
+
+  property("nRight >= 0") = forAll(
+    (z: StringZipper) =>
+      z.nRight >= 0
+  )
+
+  property("(nLeft != 0) == hasLeft") = forAll(
+    (z: StringZipper) =>
+      (z.nLeft != 0) == z.hasLeft
+  )
+
+  property("(nRight != 0) == hasRight") = forAll(
+    (z: StringZipper) =>
+      (z.nRight != 0) == z.hasRight
+  )
+
+  property("nLeft can go left") = forAll(
+    (z: StringZipper) =>
+      !z.hasFocus || (z - z.nLeft).hasFocus
+  )
+
+  property("nRight can go right") = forAll(
+    (z: StringZipper) =>
+      !z.hasFocus || (z + z.nRight).hasFocus
+  )
+
+  property("dropLeft has no left") = forAll(
+    (z: StringZipper) =>
+      !z.dropLefts.hasLeft
+  )
+
+  property("dropRight has no right") = forAll(
+    (z: StringZipper) =>
+      !z.dropRights.hasRight
+  )
+
+  property("dropLeft keeps rights") = forAll(
+    (z: StringZipper) =>
+      z.dropLefts.nRight == z.nRight
+  )
+
+  property("dropRight keeps lefts") = forAll(
+    (z: StringZipper) =>
+      z.dropRights.nLeft == z.nLeft
   )
 
 }
